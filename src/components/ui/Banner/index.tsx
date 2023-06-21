@@ -778,7 +778,7 @@ const Banner = () => {
                 <Image src={ImageOffshore} layout="fill" alt="introduce" />
                 {selectedOdc && (
                   <div
-                    className={`absolute left-[-100px] top-[-140px] hover:cursor-pointer ${stylesAnimation.hover}
+                    className={`absolute left-[-100px] top-[-140px] hover:cursor-pointer 
                       xm:left-[-40px] xm:top-[-45px] xm:h-[60px] xm:w-[60px]
                       sd:left-[-85px] sd:top-[-50px] sd:h-[90px] sd:w-[90px]
                       md:left-[-70px] md:top-[-70px] md:h-[90px] md:w-[90px]
@@ -888,7 +888,7 @@ const Banner = () => {
                 <Image layout="fill" src={ImageGame} alt="introduce" />
                 {selectedGame && (
                   <div
-                    className={`absolute left-[-10px] top-[-150px] hover:cursor-pointer ${stylesAnimation.hover}
+                    className={`absolute left-[-10px] top-[-150px] hover:cursor-pointer 
                       xm:left-[5px] xm:top-[-60px] xm:h-[60px] xm:w-[60px]
                       sd:left-[-10px] sd:top-[-75px] sd:h-[80px] sd:w-[80px]
                       md:left-[-15px] md:top-[-90px] md:h-[90px] md:w-[90px]
@@ -998,7 +998,7 @@ const Banner = () => {
                 <Image layout="fill" src={ImageGameConfig} alt="introduce" />
                 {selectedGameConfig && (
                   <div
-                    className={`absolute hover:cursor-pointer ${stylesAnimation.hover}
+                    className={`absolute hover:cursor-pointer 
                       xm:right-[-30px] xm:top-[-60px] xm:h-[70px] xm:w-[70px]
                       sd:right-[-30px] sd:top-[-60px] sd:h-[70px] sd:w-[70px]
                       ms:right-[-35px] ms:top-[-60px] ms:h-[70px] ms:w-[70px]
@@ -1115,7 +1115,7 @@ const Banner = () => {
                 />
                 {selectedWebApp && (
                   <div
-                    className={`absolute bottom-[-120px] right-[-90px] h-[150px] w-[150px] hover:cursor-pointer ${stylesAnimation.hover} z-[9999]
+                    className={`absolute bottom-[-120px] right-[-90px] h-[150px] w-[150px] hover:cursor-pointer  z-[9999]
                       xm:bottom-[-65px] xm:right-[-40px] xm:h-[70px] xm:w-[70px]
                       sd:bottom-[-60px] sd:right-[-40px] sd:h-[70px] sd:w-[70px]
                       ms:bottom-[-65px] ms:right-[-40px] ms:h-[80px] ms:w-[80px]
@@ -1231,7 +1231,7 @@ const Banner = () => {
                 />
                 {selectedHealTech && (
                   <div
-                    className={`absolute bottom-[-145px] right-[-10px] w-[190px] hover:cursor-pointer ${stylesAnimation.hover}
+                    className={`absolute bottom-[-145px] right-[-10px] w-[190px] hover:cursor-pointer 
                       xm:bottom-[-70px] xm:right-[-5px] xm:h-[70px] xm:w-[70px]
                       sd:bottom-[-70px] sd:right-[-5px] sd:h-[70px] sd:w-[70px]
                       md:bottom-[-90px] md:right-[-15px] md:h-[90px] md:w-[90px]
@@ -1340,7 +1340,7 @@ const Banner = () => {
                 />
                 {selectedCloud && (
                   <div
-                    className={`absolute bottom-[-120px] left-[-120px] hover:cursor-pointer ${stylesAnimation.hover}
+                    className={`absolute bottom-[-120px] left-[-120px] hover:cursor-pointer 
                       xm:bottom-[-65px] xm:left-[-30px] xm:h-[70px] xm:w-[70px]
                       sd:bottom-[-50px] sd:left-[-55px] sd:h-[70px] sd:w-[70px]
                       md:bottom-[-70px] md:left-[-75px] md:h-[90px] md:w-[90px]
