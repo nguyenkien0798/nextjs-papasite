@@ -707,7 +707,7 @@ const Banner = () => {
             {selectedIndex === 0 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOut}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
                     ${StyleBanner.positionAnimationOdc}
                     sm:left-[-85px] sm:top-[-50px] sm:h-[120px] sm:w-[120px]
                     md:left-[-80px] md:top-[-40px] md:h-[120px] md:w-[120px]
