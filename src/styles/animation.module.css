@@ -1,5 +1,5 @@
 .zoomOpen {
-	animation-name: zoomOutEffect;
+	animation-name: zoomInEffect;
 	animation-duration: 10s;
 	animation-iteration-count: infinite;
 }
