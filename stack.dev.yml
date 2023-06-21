@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+
+  app:
+    image: ${DOCKER_IMAGE:-node:16-alpine}
+    networks:
+      - traefik-public
+      - net_local
+    deploy:
+      replicas: 1
+      labels:
+      - "traefik.enable=true"
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+      - "traefik.http.routers.${STACK_NAME}_app.rule=Host(`${PROJECT_HOST}`)"
+      - "traefik.http.services.${STACK_NAME}_app.loadbalancer.server.port=3000"
+      - "traefik.http.routers.${STACK_NAME}_app.entrypoints=http"
+      - "traefik.http.routers.${STACK_NAME}_app_https.rule=Host(`${PROJECT_HOST}`)"
+      - "traefik.http.routers.${STACK_NAME}_app_https.tls=true"
+      - "traefik.http.routers.${STACK_NAME}_app_https.entrypoints=https"
+      - "traefik.http.routers.${STACK_NAME}_app_https.tls.certresolver=le"
+      # Uncomment below line for https redirection
+      #- "traefik.http.routers.${STACK_NAME}_app.middlewares=https-redirect"
+  
+networks:
+  net_local:
+  traefik-public:
+    external: true

@@ -1,0 +1,25 @@
+.container {
+  /* padding: 57px 224px 144px 233px; */
+  padding: 2.969vw 11.667vw 7.5vw 12.135vw;
+}
+
+@media screen and (max-width: 767.98px) {
+  .transfrom_logo {
+    width: 163px;
+    height: 163px;
+  }
+}
+
+.transfrom_logo {
+  transition: transform 0.5s, filter 0.5s;
+  filter: grayscale(1) brightness(50%) invert(100%) contrast(40%);
+}
+
+.transfrom_logo:active,
+.transfrom_logo:hover {
+  transform: scale(
+    1.2
+  ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  filter: grayscale(0);
+  transform-style: preserve-3d;
+}

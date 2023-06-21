@@ -1,0 +1,52 @@
+/* .select_option {
+  background: transparent;
+  border: 2px solid #26266e;
+} */
+
+.pd_nav {
+  /* padding: 44px 240px 0px 240px; */
+  padding: 2.292vw 12.5vw 0vw 12.5vw;
+}
+
+.menu li {
+  position: relative;
+  display: inline-block;
+}
+
+.menu li::after {
+  width: 0;
+  height: 4px;
+  position: absolute;
+  background-color: #1de9b6;
+  content: '';
+  bottom: -2px;
+  left: 0px;
+  transition: width 1s;
+}
+
+.menu li:hover::after {
+  width: 100%;
+}
+
+.menu :global(.react-select__control) {
+  padding: 11px 0;
+  width: 80px;
+}
+
+@media screen and (min-width: 1366px) {
+  .menu :global(.react-select__control) {
+    width: 72px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .menu :global(.react-select__control) {
+    width: 78px;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  .menu :global(.react-select__control) {
+    width: 80px;
+  }
+}

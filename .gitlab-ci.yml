@@ -1,0 +1,514 @@
+#~~~
+# Templates
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.init_ssh: &init_ssh |
+  eval $(ssh-agent -s)
+  echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+  mkdir -p ~/.ssh
+  chmod 700 ~/.ssh
+  [[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+# apk --no-cache add openssh-client
+
+.cache_nodejs: &cache_nodejs
+  paths:
+    - node_modules/
+    - .yarn
+  policy: pull
+
+.build_docker_on_host_template: &build_docker_on_host_template
+  stage: deploy
+  image: ${DOCKER_REGISTRY_HOST}/kroniak/ssh-client
+  script:
+    - *init_ssh
+    - exit_code=0
+    - |
+      ssh $DEPLOY_USER@$DEPLOY_HOST "
+        $(grep -v '^#' .env | xargs printf -- ' %s ')
+        /bin/bash " <<-EOT
+            cd $PROJECT_ROOT
+            git pull
+            source .env
+            [ -z $DOCKER_IMAGE ] && echo "DOCKER_IMAGE is required !" && exit 1
+            [ -z $STACK_NAME ] && echo "STACK_NAME is required !" && exit 1
+            echo "[INFO] *******************************************************"
+            echo "[INFO] *** USE DEFAULT ENV ON DEPLOY HOST TO OVERRIDE HERE ***"
+            echo "[INFO] *******************************************************"
+            echo "[INFO]-------"
+            grep -v "^#" .env | xargs printf -- "%s \n"
+            echo "[INFO]-------"
+            echo "[DEBUG] Dockerfile: Dockerfile.$BUILD_MODE"
+            cat Dockerfile.$BUILD_MODE
+            echo "[DEBUG] .env contents:"
+            cat .env
+            echo "##################"
+            echo "# Build & Push"
+            echo "##################"
+            echo "[INFO] Overriding local env..."
+            PROJECT_HOST="${PROJECT_HOST}"
+            STACK_NAME="${STACK_NAME}"
+            BUILD_MODE="${BUILD_MODE}"
+            CI_ENVIRONMENT_SLUG="${CI_ENVIRONMENT_SLUG}"
+            CI_PIPELINE_ID="${CI_PIPELINE_ID}"
+            if [ ! -z "${FORCE_DOCKER_IMAGE}" ]; then
+              DOCKER_IMAGE=${FORCE_DOCKER_IMAGE}
+            else
+              DOCKER_IMAGE="${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID}"
+            fi
+            echo "[DEBUG] Final docker image tag:"
+            echo "FORCE_DOCKER_IMAGE=$FORCE_DOCKER_IMAGE"
+            echo "DOCKER_IMAGE=$DOCKER_IMAGE"
+            echo "---" && \
+            docker build $(grep -v "^#" .env | xargs printf -- "--build-arg %s ") -t docker.io/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID} -f Dockerfile.$BUILD_MODE . ${EXTRA_BUILD_OPTS} && \
+              docker push docker.io/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.manual.${CI_PIPELINE_ID} && \
+            docker build $(grep -v "^#" .env | xargs printf -- "--build-arg %s ") -t docker.io/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.latest -f Dockerfile.$BUILD_MODE . ${EXTRA_BUILD_OPTS} && \
+              docker push docker.io/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.manual.latest && \
+            docker build $(grep -v "^#" .env | xargs printf -- "--build-arg %s ") -t registry.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID} -f Dockerfile.$BUILD_MODE . ${EXTRA_BUILD_OPTS} && \
+              docker push registry.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.manual.${CI_PIPELINE_ID} && \
+            docker build $(grep -v "^#" .env | xargs printf -- "--build-arg %s ") -t registry.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.latest -f Dockerfile.$BUILD_MODE . ${EXTRA_BUILD_OPTS} && \
+              docker push registry.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.manual.latest && \
+            docker build $(grep -v "^#" .env | xargs printf -- "--build-arg %s ") -t registry2.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID} -f Dockerfile.$BUILD_MODE . ${EXTRA_BUILD_OPTS} && \
+              docker push registry2.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.manual.${CI_PIPELINE_ID} && \
+            docker build $(grep -v "^#" .env | xargs printf -- "--build-arg %s ") -t registry2.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.latest -f Dockerfile.$BUILD_MODE . ${EXTRA_BUILD_OPTS} && \
+              docker push registry2.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.manual.latest
+      EOT
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+  only:
+    - develop
+    - production
+  when: manual
+
+.build_resource_template: &build_resource_template
+  stage: build-resource
+  image: ${DOCKER_REGISTRY_HOST}/library/node:16-bullseye-slim
+  script:
+    # For nextjs ---------
+    - apt-get update && apt-get install -y --no-install-recommends dumb-init && cp /usr/bin/dumb-init ./
+    # End for nextjs ---------
+    - npx yarn install --cache-folder .yarn
+    #- npx yarn lint
+    #- CI=false npx yarn build:staging
+    - CI=false npx yarn build
+    # - if [ "$CI_COMMIT_BRANCH" == "develop" ]; then npx yarn sonar; fi
+  cache:
+    <<: *cache_nodejs
+  artifacts:
+    paths:
+      # Common -------------
+      - Dockerfile.no-build
+      - .dockerignore
+      - bin/cicd/set-env.sh
+      # Common -------------
+      # For reactjs --------
+      #- build
+      #- nginx.conf
+      # End for reactjs ---------
+      # For nextjs ---------
+      - dumb-init
+      - package.json
+      - public
+      - .next/standalone
+      - .next/static
+      # End for nextjs ---------
+
+.build_docker_template: &build_docker_template
+  stage: build-docker
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  variables:
+    GIT_STRATEGY: none # Get all from artifacts
+  script:
+    - mkdir -p /kaniko/.docker
+    - |
+        AUTH=$(echo -n "${REGISTRY_USER}:${REGISTRY_PASSWORD}" | base64)
+        cat << EOF > /kaniko/.docker/config.json
+        {
+                "auths": {
+                        "https://index.docker.io/v1/": {
+                                "auth": "${AUTH}"
+                        },
+                        "https://registry.papagroup.net/": {
+                                "auth": "${AUTH}"
+                        },
+                        "https://registry2.papagroup.net/": {
+                                "auth": "${AUTH}"
+                        }
+                }
+        }
+        EOF
+    - echo $CI_PROJECT_DIR
+    - echo $CI_REGISTRY_IMAGE
+    - echo $CI_COMMIT_TAG
+    - echo $CI_COMMIT_SHORT_SHA
+    - echo $IMAGE_CREATED_DATE
+    # Check artifacts
+    # Common -------------
+    - cat Dockerfile.no-build
+    - cat .dockerignore
+    # Common -------------
+    # For reactjs --------
+    #- ls build
+    #- cat nginx.conf
+    # End for reactjs --------
+    # For nextjs ---------
+    - ls dumb-init
+    - cat package.json
+    - ls public
+    - ls .next/standalone
+    - ls .next/static
+    # End for nextjs ---------
+    # Build prod image (no build)
+    - /kaniko/executor --context . --dockerfile Dockerfile.no-build --destination "docker.io/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID}"
+    - /kaniko/executor --context . --dockerfile Dockerfile.no-build --destination "docker.io/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.latest"
+    - /kaniko/executor --context . --dockerfile Dockerfile.no-build --destination "registry.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID}"
+    - /kaniko/executor --context . --dockerfile Dockerfile.no-build --destination "registry.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.latest"
+    - /kaniko/executor --context . --dockerfile Dockerfile.no-build --destination "registry2.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID}"
+    - /kaniko/executor --context . --dockerfile Dockerfile.no-build --destination "registry2.papagroup.net/${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.latest"
+
+.deploy_swarm_template: &deploy_swarm
+  stage: deploy
+  image: ${DOCKER_REGISTRY_HOST}/kroniak/ssh-client
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - *init_ssh
+    - |
+      ssh $DEPLOY_USER@$DEPLOY_HOST "
+        /bin/bash " <<-EOT
+            cd $PROJECT_ROOT
+            source .env
+            echo "[DEBUG] .env contents:"
+            cat .env
+            echo "##########################"
+            echo "# Deploy (swarm)"
+            echo "##########################"
+            echo "[INFO] Overriding local env..."
+            PROJECT_HOST="${PROJECT_HOST}"
+            STACK_NAME="${STACK_NAME}"
+            BUILD_MODE="${BUILD_MODE}"
+            CI_ENVIRONMENT_SLUG="${CI_ENVIRONMENT_SLUG}"
+            DOCKER_REGISTRY=${DOCKER_REGISTRY}
+            if [ ! -z "${FORCE_DOCKER_IMAGE}" ]; then
+              DOCKER_IMAGE=${FORCE_DOCKER_IMAGE}
+            else
+              DOCKER_IMAGE="${DOCKER_IMAGE}.${CI_ENVIRONMENT_SLUG}.${CI_PIPELINE_ID}"
+            fi
+            echo "[DEBUG] env..."
+            echo "FORCE_DOCKER_IMAGE=$FORCE_DOCKER_IMAGE"
+            echo "DOCKER_IMAGE=$DOCKER_IMAGE"
+            echo "---" && \
+            docker stack deploy -c stack.${BUILD_MODE}.yml ${STACK_NAME} --with-registry-auth && \
+            sleep 5 && \
+            docker service ls && \
+            echo "Done."
+      EOT
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+  only:
+    - develop
+    - production
+
+.clear_cache_swarm_template: &clear_cache_swarm
+  stage: deploy
+  image: ${DOCKER_REGISTRY_HOST}/kroniak/ssh-client
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - *init_ssh
+    - "SERVICES_REPLICAS_STRING=$SERVICES_REPLICAS_STRING"
+    - "SERVICES_REPLICAS=(`echo $SERVICES_REPLICAS_STRING | tr ',' ' '`)"
+    - |
+      echo "[INFO] Services-Replicas-String: ${SERVICES_REPLICAS_STRING}"
+      echo "[INFO] Services-Replicas to clear cache: ${SERVICES_REPLICAS[@]}"
+      echo "[INFO] Number of services-replicas to deploy: ${#SERVICES_REPLICAS[@]}"
+      if [ ! -z "$SERVICES_REPLICAS_STRING" ]; then
+        for SERVICE_REPLICAS in ${SERVICES_REPLICAS}; do
+          echo "[INFO] Scale service ${SERVICE_REPLICAS}..."
+          [ -z "${SERVICE_REPLICAS}" ] && continue
+          SCALE_DOWN_SERVICE="${STACK_NAME}_$(printf '%s\n' ${SERVICE_REPLICAS} | sed -re 's/=[0-9]+/=0/g')"
+          SCALE_UP_SERVICE="${STACK_NAME}_${SERVICE_REPLICAS}"
+          ssh $DEPLOY_USER@$DEPLOY_HOST "
+              echo \"[INFO] Reset service ${SCALE_DOWN_SERVICE} ...\"
+              docker service scale ${SCALE_DOWN_SERVICE}
+              echo \"[INFO] Scale up service ${SCALE_UP_SERVICE} ...\"
+              docker service scale ${SCALE_UP_SERVICE}
+              docker service ls
+              echo \"Done.\"
+          "
+        done
+      else
+        echo "No service to clear."
+      fi
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+  only:
+    - develop
+    - production
+
+# Default image
+image: ${DOCKER_REGISTRY_HOST}/ppgdev/docker-compose-bash
+
+variables:
+  # see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled for Dind configuration
+  # DOCKER_HOST: tcp://docker:2375 --> this should only be configured when using Kubernetes runners
+  # When using dind, it's wise to use the overlayfs driver for
+  # improved performance.
+  DOCKER_DRIVER: overlay2
+  # Specify to Docker where to create the certificates, Docker will
+  # create them automatically on boot, and will create
+  # `/certs/client` that will be shared between the service and job
+  # container, thanks to volume mount from config.toml
+  DOCKER_TLS_CERTDIR: "/certs"
+
+before_script:
+  # Get env from gitlab setting
+  - sh ./bin/cicd/set-env.sh
+  # Common docker/swarm env
+  # - echo BUILD_MODE=$BUILD_MODE > .env
+  # - echo STACK_NAME=$STACK_NAME >> .env
+  # - echo PROJECT_HOST=$PROJECT_HOST >> .env
+  # - echo PROJECT_ROOT=$PROJECT_ROOT >> .env
+  # - echo DOCKER_REGISTRY=$DOCKER_REGISTRY >> .env
+  # - echo DOCKER_IMAGE=$DOCKER_IMAGE >> .env
+  # - echo app_REPLICAS=${app_REPLICAS:-1} >> .env
+  # Nginx/React env
+  # - echo WWW_DIR=${WWW_DIR:-./build} >> .env
+  # React env
+  # - echo REACT_APP_ENV=${REACT_APP_ENV:-production} >> .env
+  # - echo REACT_APP_API_URL=$REACT_APP_API_URL >> .env
+  # - echo BROWSER=${BROWSER:-none} >> .env
+  # - echo EXTEND_ESLINT=${EXTEND_ESLINT:-true} >> .env
+  # - echo FAST_REFRESH=${FAST_REFRESH:-true} >> .env
+  # - echo REACT_APP_API_ENDPOINT=$REACT_APP_API_ENDPOINT >> .env
+  # - echo REACT_APP_WEB_SOCKET_ENDPOINT=$REACT_APP_WEB_SOCKET_ENDPOINT >> .env
+  #- echo =$ >> .env
+  #- echo $DEPLOY_HOSTS_STRING
+  #- "export DEPLOY_HOSTS=(`echo $DEPLOY_HOSTS_STRING | tr ',' ' '`)"
+  #- echo $DEPLOY_HOSTS
+  #- "echo [INFO] Deploying hosts: ${DEPLOY_HOSTS[@]}"
+  #- "echo [INFO] Number of hosts to deploy: ${#DEPLOY_HOSTS[@]}"
+  - env | grep 'CI_JOB_STARTED_AT'
+  - env | grep 'BRANCH'
+  - IMAGE_CREATED_DATE=`date +%Y%m%d`
+  - echo $IMAGE_CREATED_DATE
+  - CI_PIPELINE_CREATED_AT=${CI_PIPELINE_CREATED_AT//\:/\-}
+  - echo $CI_PIPELINE_CREATED_AT
+  - echo ${CI_ENVIRONMENT_SLUG}
+  - cat .env
+
+stages:
+  - cache
+  #- test
+  - build-resource
+  - build-docker
+  - deploy
+
+#~~~
+# JOBS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+########################
+# Quick deployments
+########################
+
+#deploy_dev_on_host:
+# stage: deploy
+# image: ${DOCKER_REGISTRY_HOST}/kroniak/ssh-client
+# dependencies: []
+# script:
+#   - *init_ssh
+#   - exit_code=0
+#   - cat .env
+#   - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $PROJECT_ROOT && cat .env"
+#   - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $PROJECT_ROOT && bash -s " < bin/cicd/upgrade-stack.sh > deploy.log
+#   - cat deploy.log
+#   - cat deploy.log | grep 'Done.' || $exit_code=$?
+#   - if [ ${exit_code} -ne 0 ]; then echo "Deploy failed!" ; else echo "Everything is OK!"; fi
+#   - if [ ${exit_code} -ne 0 ]; then exit 1; fi
+# environment:
+#   name: dev
+# only:
+#   - develop
+# when: manual
+
+#deploy_staging_on_host:
+# stage: deploy
+# image: ${DOCKER_REGISTRY_HOST}/kroniak/ssh-client
+# dependencies: []
+# script:
+#   - *init_ssh
+#   - exit_code=0
+#   - cat .env
+#   - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $PROJECT_ROOT && cat .env"
+#   - ssh $DEPLOY_USER@$DEPLOY_HOST "cd $PROJECT_ROOT && bash -s " < bin/cicd/upgrade-stack.sh > deploy.log
+#   - cat deploy.log
+#   - cat deploy.log | grep 'Done.' || $exit_code=$?
+#   - if [ ${exit_code} -ne 0 ]; then echo "Deploy failed!" ; else echo "Everything is OK!"; fi
+#   - if [ ${exit_code} -ne 0 ]; then exit 1; fi
+# environment:
+#   name: staging
+# only:
+#   - develop
+#   - production
+# when: manual
+
+########################
+# SWARM
+########################
+install_dependencies:
+  image: ${DOCKER_REGISTRY_HOST}/library/node:16-bullseye-slim
+  stage: cache
+  only:
+    refs:
+      - develop
+      - production
+      #- merge_requests
+    changes:
+      - yarn.lock
+      #- package-lock.json
+  cache:
+    <<: *cache_nodejs
+    policy: pull-push
+  script:
+    - yarn install --cache-folder .yarn
+
+#
+# DEV
+# ---
+build_resource_dev:
+  <<: *build_resource_template
+  environment:
+    #name: $CI_COMMIT_REF_SLUG
+    name: dev
+  only:
+    - develop
+    #- merge_requests
+  #when: manual
+
+build_docker_dev:
+  <<: *build_docker_template
+  environment:
+    name: dev
+  only:
+    - develop
+  needs:
+    - build_resource_dev
+
+deploy_dev:
+  <<: *deploy_swarm
+  environment:
+    name: dev
+  only:
+    - develop
+  needs:
+    - build_resource_dev # to have artifacts
+    - build_docker_dev
+  #when: manual
+
+#
+# STAGING
+# ---
+build_resource_staging:
+  <<: *build_resource_template
+  environment:
+    name: staging
+  only:
+    - production
+
+build_docker_staging:
+  <<: *build_docker_template
+  environment:
+    name: staging
+  only:
+    - production
+  needs:
+    - build_resource_staging
+
+deploy_staging:
+  <<: *deploy_swarm
+  environment:
+    name: staging
+  only:
+    - production
+  needs:
+    - build_resource_staging # to have artifacts
+    - build_docker_staging
+
+clear_cache_staging:
+  <<: *clear_cache_swarm
+  environment:
+    name: staging
+  only:
+    - production
+  needs:
+    - build_resource_staging # to have artifacts
+    - deploy_staging
+  when: manual
+
+#
+# PRODUCTION
+# ---
+build_resource_prod:
+  <<: *build_resource_template
+  environment:
+    name: production
+  only:
+    - production
+  when: manual
+  needs:
+    - build_resource_staging
+
+build_docker_prod:
+  <<: *build_docker_template
+  environment:
+    name: production
+  only:
+    - production
+  needs:
+    - build_docker_staging
+    - build_resource_prod
+
+deploy_production:
+  <<: *deploy_swarm
+  environment:
+    name: production
+  only:
+    - production
+  needs:
+    - build_docker_prod
+    - build_resource_prod # to have artifacts
+    - deploy_staging
+  # when: manual
+
+clear_cache_production:
+  <<: *clear_cache_swarm
+  environment:
+    name: production
+  only:
+    - production
+  needs:
+    - build_resource_prod # to have artifacts
+    - deploy_production
+  when: manual
+
+########################
+# K8S
+########################
+#deploy_staging_eks:
+#  stage: deploy
+#  image: ${DOCKER_REGISTRY_HOST}/dockerhub/alpine/k8s:1.17.5
+#  only:
+#    - production
+#  dependencies: []
+#  needs:
+#    - build_docker_prod
+#  environment:
+#    name: staging
+#  variables:
+#    GIT_STRATEGY: none
+#  script:
+#    - aws eks --region $PLATFORM_AWS_REGION update-kubeconfig --name $PLATFORM_EKS_CLUSTER --kubeconfig kubeconfig
+#    - kubectl --kubeconfig kubeconfig -n papahub-staging rollout restart deployments webapp-admin
+#  when: manual
+#

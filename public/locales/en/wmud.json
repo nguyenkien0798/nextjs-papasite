@@ -1,0 +1,10 @@
+{
+  "header": "What makes us different",
+  "patient": { "name": "Patient", "description": "Persevere in solving problems" },
+  "reliable": {
+    "name": "Reliable",
+    "description": "Provide the best products and services on time"
+  },
+  "creative": { "name": "Creative", "description": "Be young, dynamic and creative" },
+  "limitless": { "name": "Limitless", "description": "Never stop learning and growing" }
+}

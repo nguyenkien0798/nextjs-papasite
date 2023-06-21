@@ -1,0 +1,10 @@
+{
+  "header": "Điều làm chúng tôi khác biệt",
+  "patient": { "name": "Kiên nhẫn", "description": "Kiên trì giải quyết vấn đề" },
+  "reliable": {
+    "name": "Đáng tin cậy",
+    "description": "Cung cấp sản phẩm và dịch vụ tốt nhất và đúng hạn"
+  },
+  "creative": { "name": "Sáng tạo", "description": "Trẻ, năng động và sáng tạo" },
+  "limitless": { "name": "Không giới hạn", "description": "Không ngừng học hỏi và sáng tạo" }
+}

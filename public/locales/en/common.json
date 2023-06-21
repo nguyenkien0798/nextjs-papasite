@@ -1,0 +1,46 @@
+{
+  "services": {
+    "name": "services",
+    "desc": "Technology services provide specialized technology-oriented solutions by combining the processes and functions of software and hardware"
+  },
+  "products": {
+    "name": "products",
+    "desc": "Products are applications designed to improve people's quality of life"
+  },
+  "blog": {
+    "name": "blog",
+    "desc": "Blog is a place to share our technology and culture"
+  },
+  "careers": {
+    "name": "careers",
+    "desc": "Recruitment information will be updated continuously at careers section"
+  },
+  "terms": {
+    "name": "terms & conditions",
+    "desc": ""
+  },
+  "privacy": {
+    "name": "privacy policy",
+    "desc": ""
+  },
+  "input": {
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone number",
+    "message": "Message",
+    "link": "Your personal link",
+    "cv": "Resume",
+    "submit": "Apply now",
+    "upload": "Select file"
+  },
+  "placeholder": {
+    "name": "Enter your full name",
+    "email": "Enter your email",
+    "phone": "Enter your phone number",
+    "message": "Enter your message",
+    "link": "Enter the link of your facebook, behance, website, ...",
+    "upload": "No file selected",
+    "search": "Search"
+  },
+  "noResult": "No result found"
+}

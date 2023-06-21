@@ -1,0 +1,121 @@
+@media screen and (max-width: 768px) {
+  .contentBanner {
+    display: none;
+  }
+
+  .contentTitle {
+    font-size: 24px;
+    line-height: 29px;
+  }
+
+  .contentDescription {
+    margin-top: 21px;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .contentBannerFooter {
+    display: block;
+    margin-bottom: 100px;
+  }
+}
+
+
+@media screen and (max-width: 639px) {
+  .imageBanner{
+    width: 240px;
+    height: 240px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+  }
+
+  .contentBannerFooter {
+    display: block;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .animationOdc {
+    width: 60px;
+    height: 60px;
+    top: 25px;
+    left: 5px
+  }
+
+  .positionAnimationOdc {
+    width: 100px;
+    height: 100px;
+    top: -45px;
+    left: -55px
+  }
+
+  .animationGame {
+    width: 60px;
+    height: 60px;
+    top: -20px;
+    left: 90px;
+  }
+
+  .positionAnimationGame {
+    width: 100px;
+    height: 100px;
+    top: -90px;
+    left: 70px
+  }
+
+  .animationGameConfig {
+    width: 60px;
+    height: 60px;
+    top: 25px;
+    right: 0px;
+  }
+
+  .positionAnimationGameConfig {
+    width: 100px;
+    height: 100px;
+    top: -40px;
+    right: -55px;
+  }
+  
+  .animationWebApp {
+    width: 60px;
+    height: 60px;
+    bottom: 30px;
+    right: 0px;
+  }
+
+  .positionAnimationWebApp {
+    width: 100px;
+    height: 100px;
+    bottom: -30px;
+    right: -55px;
+  }
+
+  .animationHealTech {
+    width: 60px;
+    height: 60px;
+    bottom: -20px;
+    left: 90px;
+  }
+
+  .positionAnimationHealTech {
+    width: 100px;
+    height: 100px;
+    bottom: -95px;
+    left: 70px;
+  }
+
+  .animationCloud {
+    width: 60px;
+    height: 60px;
+    bottom: 30px;
+    left: 0px;
+  }
+
+  .positionAnimationCloud {
+    width: 100px;
+    height: 100px;
+    bottom: -20px;
+    left: -60px;
+  }
+};

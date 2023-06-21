@@ -1,0 +1,14 @@
+.oneSlide:focus {
+  outline: none;
+}
+.oneSlide:hover {
+  cursor: pointer;
+}
+.oneSlide img {
+  box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 100%;
+  pointer-events: none;
+}
+.oneSlide img:focus {
+  outline: none;
+}

@@ -1,0 +1,64 @@
+.container {
+  /* padding: 83px 240px 46px 240px; */
+  /* padding: 3.8vw 0 3.125vw 0; */
+  /* min-height: 642px; */
+  background-image: url('../../public/backgrounds/background-footer.png'),
+    linear-gradient(180deg, #151547 0%, rgba(15, 16, 60, 0) 100%);
+  background-position: right bottom;
+  background-size: auto;
+  background-repeat: no-repeat;
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    background-size: 480px 200px, auto;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    background-size: 607px 259px, auto;
+  }
+}
+
+@media screen and (min-width: 1366px) {
+  .container {
+    background-size: 836px 357px, auto;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .container {
+    background-size: 881px 376px, auto;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    background-image: url('../../public/backgrounds/background-footer-mobile.png');
+  }
+}
+@media only screen and (max-width: 640px) and (min-width: 0px)  {
+  .displayNoneTablet {
+   display: none!important;
+    }
+}
+@media only screen and (max-width: 3000px) and (min-width: 1024px)  {
+  .displayNoneTablets {
+   display: none!important;
+    }
+}
+
+@media screen and (max-width: 1023px) {
+  .displayNonePc {
+   display: none!important;
+    }
+    
+}
+
+@media screen and (min-width: 640px) {
+  .displayNoneMobile {
+   display: none!important;
+    }
+    
+}

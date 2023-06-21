@@ -1,0 +1,46 @@
+.paginationWrapper {
+  width: 100%;
+  margin-top: 40px;
+}
+
+.pagination {
+  position: relative;
+  text-align: center;
+}
+
+.pagination span{
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 15px;
+}
+
+.pagination span.active{
+  border: 1px solid #1DE9B6;
+}
+
+.pagination span:before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  background: #B7B7C4;
+  opacity: 0.8;
+  border-radius: 50%;
+}
+
+.pagination span:before.active {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  background: #B7B7C4;
+  opacity: 0.8;
+  border-radius: 4px;
+}

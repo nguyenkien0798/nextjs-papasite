@@ -1,0 +1,10 @@
+{
+  "header": "弊社の強み",
+  "patient": { "name": "根気", "description": "永続的に問題を解決する" },
+  "reliable": {
+    "name": "信頼性",
+    "description": "最高の製品とサービスを時間通りに提供する"
+  },
+  "creative": { "name": "創造性", "description": "若々・活動的・創造的" },
+  "limitless": { "name": "無制限", "description": "永遠に  学び、成長します" }
+}

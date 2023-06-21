@@ -1,0 +1,30 @@
+.section {
+}
+
+.item {
+  /* margin-bottom: 83px; */
+
+  position: relative;
+  transition: all 0.7s ease-in-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:active,
+  .item:hover {
+    transform: scale(1.1);
+  }
+}
+
+.logo {
+}
+
+@media screen and (max-width: 767.98px) {
+  .section {
+    background: none;
+  }
+}
+@media screen and (max-width: 1023.98px) {
+  .section {
+    margin-top: 60px;
+  }
+}

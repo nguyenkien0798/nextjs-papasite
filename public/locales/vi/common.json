@@ -1,0 +1,47 @@
+{
+  "services": {
+    "name": "Dịch vụ",
+    "desc": "Cung cấp các dịch vụ giúp đưa ra các giải pháp công nghệ bằng cách kết hợp các quy trình và chức năng, bao gồm phần mềm và phần cứng"
+  },
+  "products": {
+    "name": "Sản phẩm",
+    "desc": "Những sản phẩm đã được thiết kế và ứng dụng nhằm cải thiện chất lượng sống của con người"
+  },
+  "blog": {
+    "name": "Bài viết",
+    "desc": "Nơi chia sẻ về văn hóa và công nghệ của công ty"
+  },
+  "careers": {
+    "name": "Tuyển dụng",
+    "desc": "Các thông tin về tuyển dụng sẽ được cập nhật liên tục tại đây"
+  },
+  "terms": {
+    "name": "Điều khoản sử dụng",
+    "desc": ""
+  },
+  "privacy": {
+    "name": "Chính sách bảo mật",
+    "desc": ""
+  },
+
+  "input": {
+    "name": "Họ và tên",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "message": "Tin nhắn",
+    "link": "Liên kết",
+    "cv": "CV",
+    "submit": "Gửi",
+    "upload": "Chọn tệp"
+  },
+  "placeholder": {
+    "name": "Nhập họ và tên",
+    "email": "Nhập email",
+    "phone": "Nhập số điện thoại",
+    "message": "Nhập tin nhắn",
+    "link": "Nhập liên kết facebook, behance, website, ...",
+    "upload": "Không có tệp nào được chọn",
+    "search": "Tìm kiếm"
+  },
+  "noResult": "Không có kết quả"
+}

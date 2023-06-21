@@ -1,0 +1,35 @@
+.bullet {
+  margin-right: 20px;
+}
+.bullet:last-of-type {
+  margin-right: 0;
+}
+.bullet span {
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  border: 2px solid #fff;
+  opacity: 0.5;
+  display: block;
+}
+.bullet span button {
+  box-shadow: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.bullet:hover {
+  cursor: pointer;
+}
+.bullet:hover span {
+  background: #fff;
+  opacity: 1;
+  transition: #fff 0.2s ease-in-out;
+  position: relative;
+}
+.bullet.active span {
+  background: #fff;
+  opacity: 1;
+  transition: #fff 0.2s ease-in-out;
+  position: relative;
+}

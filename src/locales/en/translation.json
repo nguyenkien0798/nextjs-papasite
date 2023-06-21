@@ -1,0 +1,53 @@
+{
+  "common": {
+    "required": "Required",
+    "invalidEmail": "Enter your email in format: name@example.com"
+  },
+  "aboutUs": {
+    "title": "About Us",
+    "developmentProcess2018": "Establish company. Open the first office.",
+    "developmentProcess2020": "Join the in-game industry by establishing Papa Studio.",
+    "developmentProcess2021": "Open Papa Academy to educate and training learners from both inside and outside company",
+    "developmentProcess2022": "Scale up to more than 70 members. Establish new office in HCM city.Do the first steps towards becoming a global company."
+  },
+  "whatMakeUsDifferent": {
+    "title": "WhatMakeUsDifferent"
+  },
+  "signIn": {
+    "title": "Login",
+    "email": "Email",
+    "emailHint": "Type email here",
+    "action": "Login",
+    "haveNoAccount": "Don’t have an account?",
+    "signUp": "Sign Up"
+  },
+  "signUp": {
+    "title": "Sign Up",
+    "description": "Set up your free account.",
+    "fullName": "Full Name",
+    "email": "Email",
+    "referralCode": "Referral Code",
+    "tocDescription": "By clicking the sign up button I have agreed to all the",
+    "tocLink": "terms and conditions",
+    "tocAnd": "and the",
+    "tocPrivacyLink": "privacy policy",
+    "action": "Sign Up",
+    "loginWith": "or login with",
+    "haveAccount": "Already have an account?",
+    "login": "Login"
+  },
+  "faqContent": {
+    "q1": "What is Ringkas?",
+    "a1": "Ringkas is a modern KPR platform that simplifies the home buying process end to end for you.",
+    "q2": "What are the required documents to register?",
+    "a2": "KTP, NPWP, past 6 months bank statement, employment record, and assets.",
+    "q3": "What are the advantages of using Ringkas over applying directly to the bank?",
+    "a3": "Your loan application at Ringkas will be assisted by our system where the application will be faster, does not require physical files, you only need to upload your data on our website, and will be selected by the system for the most suitable bank for your needs. So that allows your success rate when applying for a loan to be higher and not waste much time.",
+    "q4": "Do I need to pay the deposit before you check if I am eligible or not in this program?",
+    "a4": "Our program is free.",
+    "q5": "Is my data secure?",
+    "a5": "We make sure your data is safe and not used for things that are not approved by you.",
+    "q6": "Are there any fees to pay to Ringkas?",
+    "a6": "None. However, the fees for mortgage application will still be covered by the customer."
+  }
+}
