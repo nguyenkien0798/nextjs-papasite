@@ -628,19 +628,19 @@ const Banner = () => {
     }
   `;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setValue((v) => {
-        if (v === 8) {
-          setSelectedIndex((i) => {
-            return i === 5 ? 0 : i + 1;
-          });
-        }
-        return v === 8 ? 0 : v + 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setValue((v) => {
+  //       if (v === 8) {
+  //         setSelectedIndex((i) => {
+  //           return i === 5 ? 0 : i + 1;
+  //         });
+  //       }
+  //       return v === 8 ? 0 : v + 1;
+  //     });
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div
