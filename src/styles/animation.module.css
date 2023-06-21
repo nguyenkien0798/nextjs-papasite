@@ -43,6 +43,12 @@
 	animation-iteration-count: infinite;
 }
 
+.zoomOpen {
+	animation-name: zoomOutEffect;
+	animation-duration: 10s;
+	animation-iteration-count: infinite;
+}
+
 @keyframes zoomOutEffect {
 	0% {
 		opacity: 1;
