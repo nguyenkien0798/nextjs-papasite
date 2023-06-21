@@ -1,4 +1,4 @@
-.zoomOpen {
+.zoomIn {
 	animation-name: zoomInEffect;
 	animation-duration: 10s;
 	animation-iteration-count: infinite;
@@ -12,10 +12,10 @@
 
 @keyframes zoomInEffect {
 	0% {
-		-webkit-transform: scale(0);
-		-moz-transform: scale(0);
-		-o-transform: scale(0);
-		-ms-transform: scale(0);
+		-webkit-transform: scale(1);
+		-moz-transform: scale(1);
+		-o-transform: scale(1);
+		-ms-transform: scale(1);
 		transform: scale(0);
 		opacity: 0;
 	}
@@ -24,14 +24,14 @@
 		-moz-transform: scale(1);
 		-o-transform: scale(1);
 		-ms-transform: scale(1);
-		transform: scale(1);
+		transform: scale(0.8);
 		opacity: 1;
 	}
 	100%  {
-		-webkit-transform: scale(0);
-		-moz-transform: scale(0);
-		-o-transform: scale(0);
-		-ms-transform: scale(0);
+		-webkit-transform: scale(1);
+		-moz-transform: scale(1);
+		-o-transform: scale(1);
+		-ms-transform: scale(1);
 		transform: scale(0);
 		opacity: 0;
 	}
@@ -43,8 +43,8 @@
 	animation-iteration-count: infinite;
 }
 
-.zoomOpen {
-	animation-name: zoomOutEffect;
+.zoomIn {
+	animation-name: zoomInEffect;
 	animation-duration: 10s;
 	animation-iteration-count: infinite;
 }
