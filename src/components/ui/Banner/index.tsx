@@ -707,7 +707,7 @@ const Banner = () => {
             {selectedIndex === 0 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOpen}
                     ${StyleBanner.positionAnimationOdc}
                     sm:left-[-85px] sm:top-[-50px] sm:h-[120px] sm:w-[120px]
                     md:left-[-80px] md:top-[-40px] md:h-[120px] md:w-[120px]
@@ -821,7 +821,7 @@ const Banner = () => {
             {selectedIndex === 1 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOpen}
                     ${StyleBanner.positionAnimationGame}
                     sm:left-[60px] sm:top-[-110px] sm:h-[120px] sm:w-[120px]
                     md:left-[90px] md:top-[-110px] md:h-[120px] md:w-[120px]
@@ -926,7 +926,7 @@ const Banner = () => {
             {selectedIndex === 2 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOpen}
                     ${StyleBanner.positionAnimationGameConfig}
                     sm:right-[-90px] sm:top-[-40px] sm:h-[90px] sm:w-[90px]
                     ms:right-[-40px] ms:top-[-40px] ms:h-[90px] ms:w-[90px]
@@ -1042,7 +1042,7 @@ const Banner = () => {
             {selectedIndex === 3 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOpen}
                     ${StyleBanner.positionAnimationWebApp}
                     sm:bottom-[-40px] sm:right-[-90px] sm:h-[120px] sm:w-[120px]
                     ms:bottom-[-20px] ms:right-[-30px] ms:h-[90px] ms:w-[90px]
@@ -1159,7 +1159,7 @@ const Banner = () => {
             {selectedIndex === 4 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOpen}
                     ${StyleBanner.positionAnimationHealTech}
                     sm:bottom-[-110px] sm:right-[65px] sm:h-[120px] sm:w-[120px]
                     md:bottom-[-110px] md:right-[90px] md:h-[120px] md:w-[120px]
@@ -1268,7 +1268,7 @@ const Banner = () => {
             {selectedIndex === 5 && !hoverItem ? (
               <div>
                 <div
-                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomIn}
+                  className={`absolute hover:cursor-pointer ${stylesAnimation.zoomOpen}
                     ${StyleBanner.positionAnimationCloud}
                     sm:bottom-[-50px] sm:left-[-80px] sm:h-[120px] sm:w-[120px]
                     md:bottom-[-50px] md:left-[-60px] md:h-[120px] md:w-[120px]
