@@ -40,7 +40,7 @@ const CardService = React.memo(({ item }: { item: string }) => {
       case 'OFFSHORE DEVELOPMENT CENTER':
         return '/images/services/serviceExample.png';
       case '2D/3D/AR/VR GAME':
-        return '/images/ServicesGame.png';
+        return '/images/services/Services2D.png';
       case 'CLOUD SERVER':
         return '/images/services/servicesCloud.png';
       case 'Web & App system':
